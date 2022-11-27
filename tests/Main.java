@@ -15,7 +15,20 @@ public class Main {
             for (int i = 0; i < result.length; i++) {
                 System.out.println();
                 for (int j = 0; j < result[0].length; j++) {
-                    System.out.print(Integer.parseInt(Integer.toHexString(result[i][j]).substring(6, 8), 16) + " ");
+
+                    // Original line below. just remove the if and else statements and the variable
+                    // to return the full number output.
+                    // System.out.print(Integer.parseInt(Integer.toHexString(result[i][j]).substring(6, 8), 16)/15 + " ");
+
+                    // Just trying to see the image clearly with this.
+                    int simplifiedPixle;
+                    if ((Integer.parseInt(Integer.toHexString(result[i][j]).substring(6, 8), 16)/15) < 10) {
+                        System.out.print("=" + " ");
+                    }
+                    else {
+                        System.out.print(" " + " ");
+                    }
+
                 }
             }
 //            Convert.toString(result);
