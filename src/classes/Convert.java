@@ -13,7 +13,6 @@ public class Convert {
                 result[row][col] = image.getRGB(col, row);
             }
         }
-
         return result;
     }
 

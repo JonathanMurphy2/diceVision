@@ -43,9 +43,9 @@ public class Training {
     public static final double TOLERANCE = .01;
     public static final int LOG_FREQUENCY = 1;
 
-    public static double TRAINING_INPUTS[][];
+    public static double[][] TRAINING_INPUTS;
 
-    public static double TRAINING_IDEALS[][];
+    public static double[][] TRAINING_IDEALS;
 
     public static void init() throws IOException {
 //        MLoader mLoader = new MLoader("/Users/masonnakamura/IdeaProjects/MasonzJavaNeural/data/train-images.idx3-ubyte",
