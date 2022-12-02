@@ -38,6 +38,11 @@ public class Training {
     public final static double LEARNING_MOMENTUM = 0.25;
 
     public static final int NUM_SAMPLES = 5000;
+    public static final int MAX_EPOCHS = 1000;
+    public static final double TOLERANCE = .01;
+
+    public static final double LOG_FREQUENCY = 1; // ?
+
     final static double NORMALIZED_HI = 1;
     final static double NORMALIZED_LO = -1;
 
