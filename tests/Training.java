@@ -1,3 +1,4 @@
+import classes.Reporter;
 import classes.Utils;
 import neural.labs.lab03_06.Mop;
 import neural.matrix.IMop;
@@ -40,26 +41,11 @@ public class Training {
     public static final int NUM_SAMPLES = 5000;
     public static final int MAX_EPOCHS = 1000;
     public static final double TOLERANCE = .01;
+    public static final int LOG_FREQUENCY = 1;
 
-    public static final double LOG_FREQUENCY = 1; // ?
+    public static double[][] TRAINING_INPUTS;
 
-    final static double NORMALIZED_HI = 1;
-    final static double NORMALIZED_LO = -1;
-
-//    static final Equilateral eq =
-//            new Equilateral(IrisHelper.species2Cat.size(),
-//                    NORMALIZED_HI,
-//                    NORMALIZED_LO);
-
-    final static Map<Integer, NormalizedField> normalizers =
-            new HashMap<>();
-
-    final static Map<Integer, double[]> encoded_arrays =
-            new HashMap<>();
-
-    public static double TRAINING_INPUTS[][];
-
-    public static double TRAINING_IDEALS[][];
+    public static double[][] TRAINING_IDEALS;
 
     public static void init() throws IOException {
 //        MLoader mLoader = new MLoader("/Users/masonnakamura/IdeaProjects/MasonzJavaNeural/data/train-images.idx3-ubyte",
@@ -167,7 +153,7 @@ public class Training {
 
         Utils.log(epoch, error,sameCount > MAX_SAME_COUNT, true);
 
-        MExercise mExercise = new MExercise(network, trainingSet);
+        Reporter mExercise = new Reporter(network, trainingSet);
         mExercise.report();
 
         java.util.Date end_date = new java.util.Date();
