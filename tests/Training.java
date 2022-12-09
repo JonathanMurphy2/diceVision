@@ -88,7 +88,7 @@ public class Training {
         network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 75));
 
         // Output layer
-        network.addLayer(new BasicLayer(new ActivationSigmoid(), false, 9));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(), false, 6));
 
         // No more layers to be added
         network.getStructure().finalizeStructure();
