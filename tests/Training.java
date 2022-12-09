@@ -52,12 +52,14 @@ public class Training {
         DImage[] dImageList = dLoader.loadImages();
         int[] dLabels = dLoader.loadLabels();
 
+        IDLoader.Normal normal = DLoader.normalize();
+
         Mop mop = new Mop();
 
-        TRAINING_INPUTS = mop.slice(dImageList, 0, NUM_SAMPLES);
+        TRAINING_INPUTS = mop.slice(normal.pixels(), 0, NUM_SAMPLES);
         assert (TRAINING_INPUTS[0].length == (28 * 28));
 
-        TRAINING_IDEALS = mop.slice(dLabels, 0, NUM_SAMPLES);
+        TRAINING_IDEALS = mop.slice(normal.labels(), 0, NUM_SAMPLES);
         assert (TRAINING_IDEALS[0].length == (10 - 1));
     }
 

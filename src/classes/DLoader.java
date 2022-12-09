@@ -1,5 +1,7 @@
 package classes;
 
+import org.encog.mathutil.Equilateral;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -11,7 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 
-public class DLoader {
+public class DLoader implements IDLoader {
 
     public String imagePath;
     public String parentFolder;
@@ -25,18 +27,25 @@ public class DLoader {
     public int[] DLabels = new int[this.numberOfFiles];
     public DImage[] DImageArray = new DImage[this.numberOfFiles];
     int numberOfFiles;
+    static final Equilateral eq =
+            new Equilateral(6,
+                    0,
+                    1);
     CRC32 crc;
-//        public DLoader(String imagePath) {
-//            this.imagePath = imagePath;
-//            this.parentFolder = imagePath;
-//            this.crc = new CRC32();
-//        }
-
+//    public DLoader(String imagePath) {
+//        this.imagePath = imagePath;
+//        this.parentFolder = imagePath;
+//        this.crc = new CRC32();
+//    }
+//    public DLoader() {
+//
+//    }
 
 
 
 //////////////////////////////////////////
 
+    @Override
     public DImage[] loadImages() throws IOException {
         Path dir = Paths.get("C:\\Users\\jmurp\\Documents\\GitHub\\diceVision\\src\\Data\\DiceDataset\\DiceDataset");
         // Counts number of files
@@ -53,16 +62,19 @@ public class DLoader {
         return this.DImageArray;
     }
 
+    @Override
     public int[] loadLabels() throws IOException {
         return this.DLabels;
     }
 
+    @Override
     public void countFile (File file) {
         if (file.isFile()) {
             this.numberOfFiles += 1;
         }
     }
 
+    @Override
     public void showFile (File file) throws IOException {
         if (file.isDirectory()) {
             System.out.println("Directory: " + file.getAbsolutePath());
@@ -73,9 +85,9 @@ public class DLoader {
                     .flatMapToInt(Arrays::stream)
                     .toArray();
             // normalize the pixels
-            for(int index = 0; index < imagePixles.length; index++){
-                imagePixles[index] = imagePixles[index]/255;
-            }
+//            for(int index = 0; index < imagePixles.length; index++){
+//                imagePixles[index] = imagePixles[index]/255;
+//            }
             int length = file.getAbsolutePath().length();
             String label = file.getAbsolutePath().substring(length - 11, length - 10);
             System.out.println("File: " + file.getAbsolutePath() + " Label: " + label);
@@ -86,6 +98,29 @@ public class DLoader {
         }
         this.imageCounter += 1;
     }
+
+    @Override
+    public Normal normalize() {
+        double[][] pixels = new double[this.numberOfFiles][this.nRows * this.nCols];
+        double[][] labels = new double[this.numberOfFiles][6];
+
+        for (int itemNumber = 0; itemNumber < this.numberOfFiles; itemNumber++) {
+            int[] arrayPixels = this.DImageArray[itemNumber].pixels;
+            double[] normalizedPixels = new double[this.nRows * this.nCols];
+
+            for (int pixelIndex = 0; pixelIndex < this.nRows * this.nCols; pixelIndex++) {
+                normalizedPixels[pixelIndex] = ((double)arrayPixels[pixelIndex])/255.0;
+            }
+
+            // Store the normalized pixels
+            pixels[itemNumber] = normalizedPixels;
+            // Store the encoding
+            labels[itemNumber] = eq.encode(this.DImageArray[itemNumber].label);
+        }
+
+        return new Normal(pixels, labels);
+    }
+
 ///////////////////////////////////////////
 
 
