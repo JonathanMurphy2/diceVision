@@ -30,13 +30,13 @@ public class Reporter {
             final double[] ideal = ideals.getData();
             final double[] actual = outputs.getData();
 
-            int cat_ideal = MLoader.eq.decode(ideal);
-            int cat_actual = MLoader.eq.decode(actual);
+           // int cat_ideal = MLoader.eq.decode(ideal);
+           // int cat_actual = MLoader.eq.decode(actual);
 
             // Check if the ideal and the actual are different
-            if (cat_ideal != cat_actual){
-                error += 1;
-            }
+//            if (cat_ideal != cat_actual){
+//                error += 1;
+//            }
         }
         System.out.print("success rate = " + (tried-error) + "/" + tried + " (");
         System.out.printf("%.1f", (float)(tried-error)/tried * 100);

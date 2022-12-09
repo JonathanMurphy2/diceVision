@@ -1,11 +1,11 @@
 import classes.Reporter;
 import classes.Utils;
-import neural.labs.lab03_06.Mop;
-import neural.matrix.IMop;
-import neural.mnist.IMLoader;
-import neural.mnist.MDigit;
-import neural.util.EncogHelper;
-import neural.util.IrisHelper;
+//import neural.labs.lab03_06.Mop;
+//import neural.matrix.IMop;
+//import neural.mnist.IMLoader;
+//import neural.mnist.MDigit;
+//import neural.util.EncogHelper;
+//import neural.util.IrisHelper;
 import org.apache.commons.math3.stat.StatUtils;
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationSigmoid;

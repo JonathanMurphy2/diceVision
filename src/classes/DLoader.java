@@ -1,83 +1,115 @@
 package classes;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.zip.CRC32;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 public class DLoader {
-    public static int[][] convertTo2DUsingGetRGB(BufferedImage image) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        int[][] result = new int[height][width];
 
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                result[row][col] = image.getRGB(col, row);
-            }
+    public String imagePath;
+    public String parentFolder;
+    public int imageMagicNumber;
+    public int imageNumberOfItems;
+    public int nRows;
+    public int nCols;
+    public int labelMagicNumber;
+    int labelNumberOfLabels;
+    int numberOfFiles;
+    CRC32 crc;
+        public DLoader(String imagePath) {
+            this.imagePath = imagePath;
+            this.parentFolder = imagePath;
+            this.crc = new CRC32();
         }
 
-        return result;
+
+
+
+//////////////////////////////////////////
+
+    public DImage[] load() throws IOException {
+        Path dir = Paths.get("C:\\Users\\jmurp\\Documents\\GitHub\\diceVision\\src\\Data\\DiceDataset\\DiceDataset");
+
+        Files.walk(dir).forEach(path -> countFile(path.toFile()));
+
+        Files.walk(dir).forEach(path -> showFile(path.toFile()));
+
+
+
     }
 
-    public static String toString(int[][] pixels) {
-        System.out.println("--- testing");
-        System.out.println("  012345678901234567890123456789");
-        for (int rowIndex=0; rowIndex < 30; rowIndex++) {
-            System.out.print(rowIndex % 10 + " ");
-            for (int colIndex=0; colIndex < 30; colIndex++) {
-                if (pixels[colIndex][rowIndex] == 0) {
-                    System.out.print(".");
-                }
-                else {
-                    // Discretize the ubyte
-                    int undiscretizedPixelValue = pixels[colIndex][rowIndex];
-                    if (undiscretizedPixelValue <= 256/15) {
-                        System.out.printf("%1d", 1);
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*2){
-                        System.out.printf("%1d", 2);
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*3){
-                        System.out.printf("%1d", 3);
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*4){
-                        System.out.printf("%1d", 4);
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*5){
-                        System.out.printf("%1d", 5);
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*6){
-                        System.out.printf("%1d", 6);
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*7){
-                        System.out.printf("%1d", 7);
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*8){
-                        System.out.printf("%1d", 8);
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*9){
-                        System.out.printf("%1d", 9);
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*10){
-                        System.out.printf("%1s", "A");
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*11){
-                        System.out.printf("%1s", "B");
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*12){
-                        System.out.printf("%1s", "C");
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*13){
-                        System.out.printf("%1s", "D");
-                    }
-                    else if (undiscretizedPixelValue <= (256/15)*14){
-                        System.out.printf("%1s", "E");
-                    }
-                    else if (undiscretizedPixelValue <= 256){
-                        System.out.printf("%1.1s", "F");
-                    }
-                }
-            }
-            System.out.println();
+    public void countFile (File file) {
+        if (file.isFile()) {
+            this.numberOfFiles += 1;
         }
-        return null;
     }
-}
+
+    public void showFile (File file) throws IOException {
+        DImage[] DArray = new DImage[this.numberOfFiles];
+        if (file.isFile()) {
+            BufferedImage image = ImageIO.read(file);
+            int[][] imagePixles = Convert.convertTo2DUsingGetRGB(image);
+
+        }
+
+
+
+        if (file.isDirectory()) {
+
+            System.out.println("Directory: " + file.getAbsolutePath());
+        } else {
+            int length = file.getAbsolutePath().length();
+            String label = file.getAbsolutePath().substring(length - 11, length - 10);
+            System.out.println("File: " + file.getAbsolutePath() + " Label: " + label);
+            DArray[itemNumber] = new DImage(itemNumber, pixelArray, label);
+        }
+    }
+///////////////////////////////////////////
+
+
+
+
+//            // Create a new array of written numbers.
+//            DImage[] MArray = new DImage[imageNumberOfItems];
+//            // Loop through that list of written numbers.
+//            for (int itemNumber = 0; itemNumber < this.imageNumberOfItems; itemNumber++) {
+//                // Create a new array of pixels for each written number.
+//                int [] pixelArray = new int [nRows * nCols];
+//
+//                // Loop through and read all the individual pixels for each written number.
+//                for ( int pixel = 0; pixel < nRows * nCols; pixel++) {
+//                    pixelArray[pixel] = imageInputStream.readUnsignedByte();
+//                    this.crc.update(pixelArray[pixel]);
+//                }
+//
+//                int label = labelsInputStream.readUnsignedByte();
+//                MArray[itemNumber] = new DImage(itemNumber, pixelArray, label);
+//            }
+//            return MArray;
+//        }
+
+//        @Override
+//        public int getPixelsMagic() {
+//            return imageMagicNumber;
+//        }
+//
+//        @Override
+//        public int getLabelsMagic() {
+//            return labelMagicNumber;
+//        }
+//
+//        @Override
+//        public long getChecksum() {return this.crc.getValue(); }
+//
+//        @Override
+//        public Normal normalize() {
+//            return null;
+//        }
+    }
+
