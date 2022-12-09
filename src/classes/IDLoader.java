@@ -43,5 +43,5 @@ public interface IDLoader {
      * Normalizes the data.
      * @return Normalized data
      */
-    public Normal normalize();
+    public Normal normalize() throws IOException;
 }
