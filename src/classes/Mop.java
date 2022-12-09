@@ -40,7 +40,6 @@ public class Mop {
         return transpose(slice(transposed_src, startCol, endCol));
     }
 
-    @Override
     public void print(String msg, double[][] src) {
         System.out.println("-----------------------------------");
         System.out.println(msg);
