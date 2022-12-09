@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.zip.CRC32;
 import java.io.File;
 import java.nio.file.Path;
@@ -20,28 +21,40 @@ public class DLoader {
     public int nCols;
     public int labelMagicNumber;
     int labelNumberOfLabels;
+    public int imageCounter = 0;
+    public int[] DLabels = new int[this.numberOfFiles];
+    public DImage[] DImageArray = new DImage[this.numberOfFiles];
     int numberOfFiles;
     CRC32 crc;
-        public DLoader(String imagePath) {
-            this.imagePath = imagePath;
-            this.parentFolder = imagePath;
-            this.crc = new CRC32();
-        }
+//        public DLoader(String imagePath) {
+//            this.imagePath = imagePath;
+//            this.parentFolder = imagePath;
+//            this.crc = new CRC32();
+//        }
 
 
 
 
 //////////////////////////////////////////
 
-    public DImage[] load() throws IOException {
+    public DImage[] loadImages() throws IOException {
         Path dir = Paths.get("C:\\Users\\jmurp\\Documents\\GitHub\\diceVision\\src\\Data\\DiceDataset\\DiceDataset");
-
+        // Counts number of files
         Files.walk(dir).forEach(path -> countFile(path.toFile()));
 
-        Files.walk(dir).forEach(path -> showFile(path.toFile()));
+        Files.walk(dir).forEach(path -> {
+            try {
+                showFile(path.toFile());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        // May need to reset pointers here
+        return this.DImageArray;
+    }
 
-
-
+    public int[] loadLabels() throws IOException {
+        return this.DLabels;
     }
 
     public void countFile (File file) {
@@ -51,24 +64,27 @@ public class DLoader {
     }
 
     public void showFile (File file) throws IOException {
-        DImage[] DArray = new DImage[this.numberOfFiles];
-        if (file.isFile()) {
-            BufferedImage image = ImageIO.read(file);
-            int[][] imagePixles = Convert.convertTo2DUsingGetRGB(image);
-
-        }
-
-
-
         if (file.isDirectory()) {
-
             System.out.println("Directory: " + file.getAbsolutePath());
         } else {
+            BufferedImage image = ImageIO.read(file);
+            int[][] matrixImagePixels = Convert.convertTo2DUsingGetRGB(image);
+            int[] imagePixles = Arrays.stream(matrixImagePixels)
+                    .flatMapToInt(Arrays::stream)
+                    .toArray();
+            // normalize the pixels
+            for(int index = 0; index < imagePixles.length; index++){
+                imagePixles[index] = imagePixles[index]/255;
+            }
             int length = file.getAbsolutePath().length();
             String label = file.getAbsolutePath().substring(length - 11, length - 10);
             System.out.println("File: " + file.getAbsolutePath() + " Label: " + label);
-            DArray[itemNumber] = new DImage(itemNumber, pixelArray, label);
+            // Add the label
+            this.DLabels[this.imageCounter] = Integer.parseInt(label);
+            // Add the image
+            this.DImageArray[this.imageCounter] = new DImage(this.imageCounter, imagePixles, Integer.parseInt(label));
         }
+        this.imageCounter += 1;
     }
 ///////////////////////////////////////////
 
