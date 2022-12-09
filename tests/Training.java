@@ -1,5 +1,4 @@
-import classes.Reporter;
-import classes.Utils;
+import classes.*;
 //import neural.labs.lab03_06.Mop;
 //import neural.matrix.IMop;
 //import neural.mnist.IMLoader;
@@ -48,21 +47,18 @@ public class Training {
     public static double[][] TRAINING_IDEALS;
 
     public static void init() throws IOException {
-//        MLoader mLoader = new MLoader("/Users/masonnakamura/IdeaProjects/MasonzJavaNeural/data/train-images.idx3-ubyte",
-//                "/Users/masonnakamura/IdeaProjects/MasonzJavaNeural/data/train-labels.idx1-ubyte");
-//
-//        MDigit[] mList = mLoader.load();
-//
-//        IMLoader.Normal normal = mLoader.normalize();
-//
-//
-//        Mop mop = new Mop();
-//
-//        TRAINING_INPUTS = mop.slice(normal.pixels(), 0, NUM_SAMPLES);
-//        assert (TRAINING_INPUTS[0].length == (28 * 28));
-//
-//        TRAINING_IDEALS = mop.slice(normal.labels(), 0, NUM_SAMPLES);
-//        assert (TRAINING_IDEALS[0].length == (10 - 1));
+        DLoader dLoader = new DLoader();
+
+        DImage[] dImageList = dLoader.loadImages();
+        int[] dLabels = dLoader.loadLabels();
+
+        Mop mop = new Mop();
+
+        TRAINING_INPUTS = mop.slice(dImageList, 0, NUM_SAMPLES);
+        assert (TRAINING_INPUTS[0].length == (28 * 28));
+
+        TRAINING_IDEALS = mop.slice(dLabels, 0, NUM_SAMPLES);
+        assert (TRAINING_IDEALS[0].length == (10 - 1));
     }
 
 
