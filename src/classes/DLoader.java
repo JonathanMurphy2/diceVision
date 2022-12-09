@@ -1,5 +1,6 @@
 package classes;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
@@ -19,35 +20,56 @@ public class DLoader {
     public int nCols;
     public int labelMagicNumber;
     int labelNumberOfLabels;
+    int numberOfFiles;
     CRC32 crc;
         public DLoader(String imagePath) {
             this.imagePath = imagePath;
-
             this.parentFolder = imagePath;
             this.crc = new CRC32();
         }
 
-        //public DImage[] load() throws IOException {
+
 
 
 //////////////////////////////////////////
 
-    public static void main(String... args) throws Exception {
+    public DImage[] load() throws IOException {
         Path dir = Paths.get("C:\\Users\\jmurp\\Documents\\GitHub\\diceVision\\src\\Data\\DiceDataset\\DiceDataset");
+
+        Files.walk(dir).forEach(path -> countFile(path.toFile()));
+
         Files.walk(dir).forEach(path -> showFile(path.toFile()));
+
+
+
     }
 
-    public static void showFile(File file) {
+    public void countFile (File file) {
+        if (file.isFile()) {
+            this.numberOfFiles += 1;
+        }
+    }
+
+    public void showFile (File file) throws IOException {
+        DImage[] DArray = new DImage[this.numberOfFiles];
+        if (file.isFile()) {
+            BufferedImage image = ImageIO.read(file);
+            int[][] imagePixles = Convert.convertTo2DUsingGetRGB(image);
+
+        }
+
+
+
         if (file.isDirectory()) {
 
             System.out.println("Directory: " + file.getAbsolutePath());
         } else {
             int length = file.getAbsolutePath().length();
-            String label =  file.getAbsolutePath().substring(length - 11, length - 10);
+            String label = file.getAbsolutePath().substring(length - 11, length - 10);
             System.out.println("File: " + file.getAbsolutePath() + " Label: " + label);
+            DArray[itemNumber] = new DImage(itemNumber, pixelArray, label);
         }
     }
-
 ///////////////////////////////////////////
 
 
