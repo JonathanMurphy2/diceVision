@@ -16,8 +16,6 @@ public class Convert {
         return result;
     }
 
-    public static
-
     public static String toString(int[][] pixels) {
         System.out.println("--- testing");
         System.out.println("  012345678901234567890123456789");
