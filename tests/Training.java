@@ -89,7 +89,7 @@ public class Training {
         network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 75));
 
         // Output layer
-        network.addLayer(new BasicLayer(new ActivationSigmoid(), false, 6));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(), false, 5));
 
         // No more layers to be added
         network.getStructure().finalizeStructure();
@@ -105,8 +105,8 @@ public class Training {
         MLDataSet testingSet = new BasicMLDataSet(TESTING_INPUTS, TESTING_IDEALS);
 
         // Use a training object for the learning algorithm, backpropagation.
-        final BasicTraining training = new Backpropagation(network, trainingSet,LEARNING_RATE,LEARNING_MOMENTUM);
-        //final BasicTraining training = new ResilientPropagation(network, trainingSet);
+//        final BasicTraining training = new Backpropagation(network, trainingSet,LEARNING_RATE,LEARNING_MOMENTUM);
+        final BasicTraining training = new ResilientPropagation(network, trainingSet);
 
 //      Set learning batch size: 0 = batch, 1 = online, n = batch size
 //      See org.encog.neural.networks.training.BatchSize
