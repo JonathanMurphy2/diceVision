@@ -46,8 +46,12 @@ public class Training {
 
     public static double[][] TRAINING_IDEALS;
 
+    static String directoryRoot = System.getProperty("user.dir");
+
     public static void init() throws IOException {
-        DLoader dLoader = new DLoader("C:\\Users\\jmurp\\Documents\\GitHub\\diceVision\\src\\Data\\DiceDataset\\DiceDataset");
+
+
+        DLoader dLoader = new DLoader(directoryRoot + "\\src\\Data\\DiceDataset\\DiceDataset");
 
 //        DImage[] dImageList = dLoader.loadImages();
 //        int[] dLabels = dLoader.loadLabels();
@@ -130,7 +134,7 @@ public class Training {
                 minError = error;
                 sameCount = 1;
                 EncogDirectoryPersistence.saveObject(
-                        new File("C:\\Users\\jmurp\\Documents\\GitHub\\diceVision\\src\\encogPersistence"+"\\encog-" + NUM_SAMPLES+".bin"),network);
+                        new File(directoryRoot + "\\src\\encogPersistence"+"\\encog-" + NUM_SAMPLES+ ".bin"),network);
 
             }
             else
@@ -144,7 +148,7 @@ public class Training {
         } while (error > TOLERANCE && epoch < MAX_EPOCHS);
 
         EncogDirectoryPersistence.saveObject(
-                new File("C:\\Users\\jmurp\\Documents\\GitHub\\diceVision\\src\\encogPersistence"+"\\encog-"+ NUM_SAMPLES+ ".bin"),network);
+                new File(directoryRoot + "\\src\\encogPersistence"+"\\encog-" + NUM_SAMPLES+ ".bin"),network);
 
 
         training.finishTraining();

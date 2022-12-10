@@ -17,12 +17,6 @@ public class DLoader implements IDLoader {
 
     public String imagePath;
     public String parentFolder;
-    public int imageMagicNumber;
-    public int imageNumberOfItems;
-    public int nRows;
-    public int nCols;
-    public int labelMagicNumber;
-    int labelNumberOfLabels;
     public int imageCounter = 0;
     int numberOfFiles;
     public int[] DLabels;
@@ -76,9 +70,7 @@ public class DLoader implements IDLoader {
 
     @Override
     public void showFile (File file) throws IOException {
-        if (file.isDirectory()) {
-            System.out.println("Directory: " + file.getAbsolutePath());
-        } else {
+        if (file.isFile()) {
             BufferedImage image = ImageIO.read(file);
             int[][] matrixImagePixels = Convert.convertTo2DUsingGetRGB(image);
             int[] imagePixles = Arrays.stream(matrixImagePixels)
@@ -87,10 +79,10 @@ public class DLoader implements IDLoader {
 
             int length = file.getAbsolutePath().length();
             String label = file.getAbsolutePath().substring(length - 11, length - 10);
-            System.out.println("File: " + file.getAbsolutePath() + " Label: " + label);
+            //System.out.println("File: " + file.getAbsolutePath() + " Label: " + label);
             // Add the label
-            System.out.println("COUNTER:" + this.imageCounter);
-            System.out.println("ARRAY lENGTH: " + this.DImageArray.length);
+            //System.out.println("COUNTER:" + this.imageCounter);
+            //System.out.println("ARRAY lENGTH: " + this.DImageArray.length);
             this.DLabels[this.imageCounter] = Integer.parseInt(label);
             // Add the image
             this.DImageArray[this.imageCounter] = new DImage(this.imageCounter, imagePixles, Integer.parseInt(label));
