@@ -31,7 +31,7 @@ public interface IDLoader {
      */
     public int[] loadLabels() throws IOException ;
 
-    public void countFile (File file);
+    public void countFiles (File file);
 
     /**
      * Gets the checksum over the pixels <i>only</i>.

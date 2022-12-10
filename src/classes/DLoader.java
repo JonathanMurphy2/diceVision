@@ -17,40 +17,26 @@ public class DLoader implements IDLoader {
 
     public String imagePath;
     public String parentFolder;
-    public int imageMagicNumber;
-    public int imageNumberOfItems;
-    public int nRows;
-    public int nCols;
-    public int labelMagicNumber;
-    int labelNumberOfLabels;
     public int imageCounter = 0;
     int numberOfFiles;
     public int[] DLabels;
     public DImage[] DImageArray;
+    public String path;
 
     static final Equilateral eq =
             new Equilateral(7,
                     0,
                     1);
     CRC32 crc;
-//    public DLoader(String imagePath) {
-//        this.imagePath = imagePath;
-//        this.parentFolder = imagePath;
-//        this.crc = new CRC32();
-//    }
-//    public DLoader() {
-//
-//    }
 
-
-
-//////////////////////////////////////////
-
+    public DLoader(String path) {
+        this.path = path;
+    }
     @Override
     public DImage[] loadImages() throws IOException {
-        Path dir = Paths.get("/Users/masonnakamura/Local-Git/diceVision/src/Data/DiceDataset/DiceDataset");
+        Path dir = Paths.get(this.path);
         // Counts number of files
-        Files.walk(dir).forEach(path -> countFile(path.toFile()));
+        Files.walk(dir).forEach(path -> countFiles(path.toFile()));
 
         initializeArrays();
 
@@ -76,7 +62,7 @@ public class DLoader implements IDLoader {
     }
 
     @Override
-    public void countFile (File file) {
+    public void countFiles (File file) {
         if (file.isFile()) {
             this.numberOfFiles += 1;
         }
@@ -84,24 +70,19 @@ public class DLoader implements IDLoader {
 
     @Override
     public void showFile (File file) throws IOException {
-        if (file.isDirectory()) {
-            System.out.println("Directory: " + file.getAbsolutePath());
-        } else {
+        if (file.isFile()) {
             BufferedImage image = ImageIO.read(file);
             int[][] matrixImagePixels = Convert.convertTo2DUsingGetRGB(image);
             int[] imagePixles = Arrays.stream(matrixImagePixels)
                     .flatMapToInt(Arrays::stream)
                     .toArray();
-            // normalize the pixels
-//            for(int index = 0; index < imagePixles.length; index++){
-//                imagePixles[index] = imagePixles[index]/255;
-//            }
+
             int length = file.getAbsolutePath().length();
             String label = file.getAbsolutePath().substring(length - 11, length - 10);
-            System.out.println("File: " + file.getAbsolutePath() + " Label: " + label);
+            //System.out.println("File: " + file.getAbsolutePath() + " Label: " + label);
             // Add the label
-            System.out.println("COUNTER:" + this.imageCounter);
-            System.out.println("ARRAY lENGTH: " + this.DImageArray.length);
+            //System.out.println("COUNTER:" + this.imageCounter);
+            //System.out.println("ARRAY lENGTH: " + this.DImageArray.length);
             this.DLabels[this.imageCounter] = Integer.parseInt(label);
             // Add the image
             this.DImageArray[this.imageCounter] = new DImage(this.imageCounter, imagePixles, Integer.parseInt(label));
@@ -132,47 +113,5 @@ public class DLoader implements IDLoader {
 
         return new Normal(pixels, labels);
     }
-
-///////////////////////////////////////////
-
-
-
-
-//            // Create a new array of written numbers.
-//            DImage[] MArray = new DImage[imageNumberOfItems];
-//            // Loop through that list of written numbers.
-//            for (int itemNumber = 0; itemNumber < this.imageNumberOfItems; itemNumber++) {
-//                // Create a new array of pixels for each written number.
-//                int [] pixelArray = new int [nRows * nCols];
-//
-//                // Loop through and read all the individual pixels for each written number.
-//                for ( int pixel = 0; pixel < nRows * nCols; pixel++) {
-//                    pixelArray[pixel] = imageInputStream.readUnsignedByte();
-//                    this.crc.update(pixelArray[pixel]);
-//                }
-//
-//                int label = labelsInputStream.readUnsignedByte();
-//                MArray[itemNumber] = new DImage(itemNumber, pixelArray, label);
-//            }
-//            return MArray;
-//        }
-
-//        @Override
-//        public int getPixelsMagic() {
-//            return imageMagicNumber;
-//        }
-//
-//        @Override
-//        public int getLabelsMagic() {
-//            return labelMagicNumber;
-//        }
-//
-//        @Override
-//        public long getChecksum() {return this.crc.getValue(); }
-//
-//        @Override
-//        public Normal normalize() {
-//            return null;
-//        }
-    }
+}
 

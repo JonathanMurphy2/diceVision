@@ -37,17 +37,24 @@ public class Training {
     public final static double LEARNING_RATE = 0.25;
     public final static double LEARNING_MOMENTUM = 0.25;
 
-    public static final int NUM_SAMPLES = 500;
-    public static final int MAX_EPOCHS = 1000;
-    public static final double TOLERANCE = .01;
-    public static final int LOG_FREQUENCY = 1;
+    public static final int TRAINING_SAMPLES = 500;
 
+    public static final int TESTING_SAMPLES = 200;
+    public static final int MAX_EPOCHS = 1000;
+    public static final double TOLERANCE = .05;
+    public static final int LOG_FREQUENCY = 1;
+    private static  double[][] TESTING_IDEALS;
+    private static double[][] TESTING_INPUTS;
     public static double[][] TRAINING_INPUTS;
 
     public static double[][] TRAINING_IDEALS;
 
+    static String directoryRoot = System.getProperty("user.dir");
+
     public static void init() throws IOException {
-        DLoader dLoader = new DLoader();
+
+
+        DLoader dLoader = new DLoader(directoryRoot + "\\src\\Data\\DiceDataset\\DiceDataset");
 
 //        DImage[] dImageList = dLoader.loadImages();
 //        int[] dLabels = dLoader.loadLabels();
@@ -56,11 +63,18 @@ public class Training {
 
         Mop mop = new Mop();
 
-        TRAINING_INPUTS = mop.slice(normal.pixels(), 0, NUM_SAMPLES);
+        TRAINING_INPUTS = mop.slice(normal.pixels(), 0, TRAINING_SAMPLES);
 //        assert (TRAINING_INPUTS[0].length == (28 * 28));
 
-        TRAINING_IDEALS = mop.slice(normal.labels(), 0, NUM_SAMPLES);
+        TRAINING_IDEALS = mop.slice(normal.labels(), 0, TRAINING_SAMPLES);
 //        assert (TRAINING_IDEALS[0].length == (10 - 1));
+
+        TESTING_INPUTS = mop.slice(normal.pixels(), 0, TESTING_SAMPLES);
+//        assert (TRAINING_INPUTS[0].length == (28 * 28));
+
+        TESTING_IDEALS = mop.slice(normal.labels(), 0, TESTING_SAMPLES);
+//        assert (TRAINING_IDEALS[0].length == (10 - 1));
+
     }
 
 
@@ -101,6 +115,8 @@ public class Training {
         // Create training observations
         MLDataSet trainingSet = new BasicMLDataSet(TRAINING_INPUTS, TRAINING_IDEALS);
 
+        MLDataSet testingSet = new BasicMLDataSet(TESTING_INPUTS, TESTING_IDEALS);
+
         // Use a training object for the learning algorithm, backpropagation.
 //      final BasicTraining training = new Backpropagation(network, trainingSet,LEARNING_RATE,LEARNING_MOMENTUM);
         final BasicTraining training = new ResilientPropagation(network, trainingSet);
@@ -130,7 +146,7 @@ public class Training {
                 minError = error;
                 sameCount = 1;
                 EncogDirectoryPersistence.saveObject(
-                        new File("/Users/masonnakamura/IdeaProjects/MasonzJavaNeural/src/main/java/neural/labs/labs07_10"+"/encogmnist-”+NUM_SAMPLES+”.bin"),network);
+                        new File(directoryRoot + "\\src\\encogPersistence"+"\\encog-" + TRAINING_SAMPLES+ ".bin"),network);
 
             }
             else
@@ -144,7 +160,7 @@ public class Training {
         } while (error > TOLERANCE && epoch < MAX_EPOCHS);
 
         EncogDirectoryPersistence.saveObject(
-                new File("/Users/masonnakamura/IdeaProjects/MasonzJavaNeural/src/main/java/neural/labs/labs07_10"+"/encogmnist-"+ NUM_SAMPLES+ ".bin"),network);
+                new File(directoryRoot + "\\src\\encogPersistence"+"\\encog-" + TRAINING_SAMPLES+ ".bin"),network);
 
 
         training.finishTraining();
@@ -160,10 +176,10 @@ public class Training {
 //        EncogHelper.describe(network);
 //
 //        // Create testing observations
-//        MLDataSet testingSet = new BasicMLDataSet(TESTING_INPUTS, TESTING_IDEALS);
+       // MLDataSet testingSet = new BasicMLDataSet(TESTING_INPUTS, TESTING_IDEALS);
 //        // Testing network on testing data
-////        EncogHelper.report(testingSet, network);
-//        network_report(testingSet, network);
+         //EncogHelper.report(testingSet, network);
+          //network_report(testingSet, network);
         Encog.getInstance().shutdown();
     }
 }
