@@ -37,7 +37,7 @@ public class Training {
     public final static double LEARNING_RATE = 0.25;
     public final static double LEARNING_MOMENTUM = 0.25;
 
-    public static final int NUM_SAMPLES = 5000;
+    public static final int NUM_SAMPLES = 500;
     public static final int MAX_EPOCHS = 1000;
     public static final double TOLERANCE = .01;
     public static final int LOG_FREQUENCY = 1;
@@ -49,16 +49,18 @@ public class Training {
     public static void init() throws IOException {
         DLoader dLoader = new DLoader();
 
-        DImage[] dImageList = dLoader.loadImages();
-        int[] dLabels = dLoader.loadLabels();
+//        DImage[] dImageList = dLoader.loadImages();
+//        int[] dLabels = dLoader.loadLabels();
+
+        IDLoader.Normal normal = dLoader.normalize();
 
         Mop mop = new Mop();
 
-        TRAINING_INPUTS = mop.slice(dImageList, 0, NUM_SAMPLES);
-        assert (TRAINING_INPUTS[0].length == (28 * 28));
+        TRAINING_INPUTS = mop.slice(normal.pixels(), 0, NUM_SAMPLES);
+//        assert (TRAINING_INPUTS[0].length == (28 * 28));
 
-        TRAINING_IDEALS = mop.slice(dLabels, 0, NUM_SAMPLES);
-        assert (TRAINING_IDEALS[0].length == (10 - 1));
+        TRAINING_IDEALS = mop.slice(normal.labels(), 0, NUM_SAMPLES);
+//        assert (TRAINING_IDEALS[0].length == (10 - 1));
     }
 
 
@@ -77,7 +79,7 @@ public class Training {
         BasicNetwork network = new BasicNetwork();
 
         // Input layer plus bias node
-        network.addLayer(new BasicLayer(null, true, 784));
+        network.addLayer(new BasicLayer(null, true, 16384));
 
         // Hidden layer plus bias node
         network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 100));
@@ -86,7 +88,7 @@ public class Training {
         network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 75));
 
         // Output layer
-        network.addLayer(new BasicLayer(new ActivationSigmoid(), false, 9));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(), false, 6));
 
         // No more layers to be added
         network.getStructure().finalizeStructure();

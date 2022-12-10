@@ -1,5 +1,7 @@
 package classes;
 
+import org.encog.mathutil.Equilateral;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -11,7 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 
-public class DLoader {
+public class DLoader implements IDLoader {
 
     public String imagePath;
     public String parentFolder;
@@ -22,25 +24,35 @@ public class DLoader {
     public int labelMagicNumber;
     int labelNumberOfLabels;
     public int imageCounter = 0;
-    public int[] DLabels = new int[this.numberOfFiles];
-    public DImage[] DImageArray = new DImage[this.numberOfFiles];
     int numberOfFiles;
-    CRC32 crc;
-//        public DLoader(String imagePath) {
-//            this.imagePath = imagePath;
-//            this.parentFolder = imagePath;
-//            this.crc = new CRC32();
-//        }
+    public int[] DLabels;
+    public DImage[] DImageArray;
 
+    static final Equilateral eq =
+            new Equilateral(7,
+                    0,
+                    1);
+    CRC32 crc;
+//    public DLoader(String imagePath) {
+//        this.imagePath = imagePath;
+//        this.parentFolder = imagePath;
+//        this.crc = new CRC32();
+//    }
+//    public DLoader() {
+//
+//    }
 
 
 
 //////////////////////////////////////////
 
+    @Override
     public DImage[] loadImages() throws IOException {
-        Path dir = Paths.get("C:\\Users\\jmurp\\Documents\\GitHub\\diceVision\\src\\Data\\DiceDataset\\DiceDataset");
+        Path dir = Paths.get("/Users/masonnakamura/Local-Git/diceVision/src/Data/DiceDataset/DiceDataset");
         // Counts number of files
         Files.walk(dir).forEach(path -> countFile(path.toFile()));
+
+        initializeArrays();
 
         Files.walk(dir).forEach(path -> {
             try {
@@ -53,16 +65,24 @@ public class DLoader {
         return this.DImageArray;
     }
 
+    public void initializeArrays() {
+        this.DLabels = new int[this.numberOfFiles];
+        this.DImageArray = new DImage[this.numberOfFiles];
+    }
+
+    @Override
     public int[] loadLabels() throws IOException {
         return this.DLabels;
     }
 
+    @Override
     public void countFile (File file) {
         if (file.isFile()) {
             this.numberOfFiles += 1;
         }
     }
 
+    @Override
     public void showFile (File file) throws IOException {
         if (file.isDirectory()) {
             System.out.println("Directory: " + file.getAbsolutePath());
@@ -73,19 +93,46 @@ public class DLoader {
                     .flatMapToInt(Arrays::stream)
                     .toArray();
             // normalize the pixels
-            for(int index = 0; index < imagePixles.length; index++){
-                imagePixles[index] = imagePixles[index]/255;
-            }
+//            for(int index = 0; index < imagePixles.length; index++){
+//                imagePixles[index] = imagePixles[index]/255;
+//            }
             int length = file.getAbsolutePath().length();
             String label = file.getAbsolutePath().substring(length - 11, length - 10);
             System.out.println("File: " + file.getAbsolutePath() + " Label: " + label);
             // Add the label
+            System.out.println("COUNTER:" + this.imageCounter);
+            System.out.println("ARRAY lENGTH: " + this.DImageArray.length);
             this.DLabels[this.imageCounter] = Integer.parseInt(label);
             // Add the image
             this.DImageArray[this.imageCounter] = new DImage(this.imageCounter, imagePixles, Integer.parseInt(label));
+            this.imageCounter += 1;
         }
-        this.imageCounter += 1;
     }
+
+    @Override
+    public Normal normalize() throws IOException {
+        loadImages();
+//        System.out.println(DImageArray[2].pixels.length);
+        double[][] pixels = new double[this.numberOfFiles][this.DImageArray[0].pixels.length];
+        double[][] labels = new double[this.numberOfFiles][6];
+
+        for (int itemNumber = 0; itemNumber < this.numberOfFiles; itemNumber++) {
+            int[] arrayPixels = this.DImageArray[itemNumber].pixels;
+            double[] normalizedPixels = new double[this.DImageArray[itemNumber].pixels.length];
+
+            for (int pixelIndex = 0; pixelIndex < this.DImageArray[itemNumber].pixels.length; pixelIndex++) {
+                normalizedPixels[pixelIndex] = ((double)arrayPixels[pixelIndex])/255.0;
+            }
+
+            // Store the normalized pixels
+            pixels[itemNumber] = normalizedPixels;
+            // Store the encoding
+            labels[itemNumber] = eq.encode(this.DImageArray[itemNumber].label);
+        }
+
+        return new Normal(pixels, labels);
+    }
+
 ///////////////////////////////////////////
 
 
