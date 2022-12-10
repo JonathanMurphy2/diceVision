@@ -14,6 +14,7 @@ import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.arrayutil.NormalizedField;
@@ -118,8 +119,8 @@ public class Training {
         MLDataSet testingSet = new BasicMLDataSet(TESTING_INPUTS, TESTING_IDEALS);
 
         // Use a training object for the learning algorithm, backpropagation.
-//      final BasicTraining training = new Backpropagation(network, trainingSet,LEARNING_RATE,LEARNING_MOMENTUM);
-        final BasicTraining training = new ResilientPropagation(network, trainingSet);
+        final BasicTraining training = new Backpropagation(network, trainingSet,LEARNING_RATE,LEARNING_MOMENTUM);
+        //final BasicTraining training = new ResilientPropagation(network, trainingSet);
 
 //      Set learning batch size: 0 = batch, 1 = online, n = batch size
 //      See org.encog.neural.networks.training.BatchSize
@@ -180,6 +181,10 @@ public class Training {
 //        // Testing network on testing data
          //EncogHelper.report(testingSet, network);
           //network_report(testingSet, network);
+
+        Reporter mTest = new Reporter(network, testingSet);
+        mTest.report();
+
         Encog.getInstance().shutdown();
     }
 }
