@@ -47,7 +47,7 @@ public class Training {
     public static double[][] TRAINING_IDEALS;
 
     public static void init() throws IOException {
-        DLoader dLoader = new DLoader();
+        DLoader dLoader = new DLoader("C:\\Users\\jmurp\\Documents\\GitHub\\diceVision\\src\\Data\\DiceDataset\\DiceDataset");
 
 //        DImage[] dImageList = dLoader.loadImages();
 //        int[] dLabels = dLoader.loadLabels();
@@ -130,7 +130,7 @@ public class Training {
                 minError = error;
                 sameCount = 1;
                 EncogDirectoryPersistence.saveObject(
-                        new File("/Users/masonnakamura/IdeaProjects/MasonzJavaNeural/src/main/java/neural/labs/labs07_10"+"/encogmnist-”+NUM_SAMPLES+”.bin"),network);
+                        new File("C:\\Users\\jmurp\\Documents\\GitHub\\diceVision\\src\\encogPersistence"+"\\encog-" + NUM_SAMPLES+".bin"),network);
 
             }
             else
@@ -144,7 +144,7 @@ public class Training {
         } while (error > TOLERANCE && epoch < MAX_EPOCHS);
 
         EncogDirectoryPersistence.saveObject(
-                new File("/Users/masonnakamura/IdeaProjects/MasonzJavaNeural/src/main/java/neural/labs/labs07_10"+"/encogmnist-"+ NUM_SAMPLES+ ".bin"),network);
+                new File("C:\\Users\\jmurp\\Documents\\GitHub\\diceVision\\src\\encogPersistence"+"\\encog-"+ NUM_SAMPLES+ ".bin"),network);
 
 
         training.finishTraining();
