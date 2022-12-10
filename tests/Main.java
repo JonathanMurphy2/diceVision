@@ -15,8 +15,6 @@ public class Main {
             for (int i = 0; i < result.length; i++) {
                 System.out.println();
                 for (int j = 0; j < result[0].length; j++) {
-
-                    int simplifiedPixle;
                     if ((Integer.parseInt(Integer.toHexString(result[i][j]).substring(6, 8), 16)/15) < 10) {
                         System.out.print("=" + " ");
                     }

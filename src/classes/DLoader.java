@@ -24,7 +24,7 @@ public class DLoader implements IDLoader {
     public String path;
 
     static final Equilateral eq =
-            new Equilateral(7,
+            new Equilateral(6,
                     0,
                     1);
     CRC32 crc;
@@ -72,10 +72,16 @@ public class DLoader implements IDLoader {
     public void showFile (File file) throws IOException {
         if (file.isFile()) {
             BufferedImage image = ImageIO.read(file);
+//            BufferedImage monoChromeImage = new BufferedImage(image.getWidth(), image.getHeight(),
+//                    BufferedImage.TYPE_BYTE_BINARY);
             int[][] matrixImagePixels = Convert.convertTo2DUsingGetRGB(image);
             int[] imagePixles = Arrays.stream(matrixImagePixels)
                     .flatMapToInt(Arrays::stream)
                     .toArray();
+            for (int i = 0; i < 1; i++)
+                System.out.print(imagePixles[i]);
+            System.out.println();
+
 
             int length = file.getAbsolutePath().length();
             String label = file.getAbsolutePath().substring(length - 11, length - 10);
@@ -93,7 +99,7 @@ public class DLoader implements IDLoader {
         // Shuffle the DImage Array
         Utils.shuffleArray(this.DImageArray);
         double[][] pixels = new double[this.numberOfFiles][this.DImageArray[0].pixels.length];
-        double[][] labels = new double[this.numberOfFiles][6];
+        double[][] labels = new double[this.numberOfFiles][5];
 
         for (int itemNumber = 0; itemNumber < this.numberOfFiles; itemNumber++) {
             int[] arrayPixels = this.DImageArray[itemNumber].pixels;
@@ -106,7 +112,7 @@ public class DLoader implements IDLoader {
             // Store the normalized pixels
             pixels[itemNumber] = normalizedPixels;
             // Store the encoding
-            labels[itemNumber] = eq.encode(this.DImageArray[itemNumber].label);
+            labels[itemNumber] = eq.encode(this.DImageArray[itemNumber].label - 1);
         }
 
         return new Normal(pixels, labels);
