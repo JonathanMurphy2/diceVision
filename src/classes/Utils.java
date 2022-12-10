@@ -10,6 +10,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
     /** Error tolerance: 1% */
@@ -195,6 +197,36 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /** Shuffles a 2D array with the same number of columns for each row. */
+    public static void shuffle(double[][] matrix, int columns, Random rnd) {
+        int size = matrix.length * columns;
+        for (int i = size; i > 1; i--)
+            swap(matrix, columns, i - 1, rnd.nextInt(i));
+    }
+
+    /**
+     * Swaps two entries in a 2D array, where i and j are 1-dimensional indexes, looking at the
+     * array from left to right and top to bottom.
+     */
+    public static void swap(double[][] matrix, int columns, int i, int j) {
+        double tmp = matrix[i / columns][i % columns];
+        matrix[i / columns][i % columns] = matrix[j / columns][j % columns];
+        matrix[j / columns][j % columns] = tmp;
+    }
+
+    // Implementing Fisher–Yates shuffle
+    // https://stackoverflow.com/questions/1519736/random-shuffling-of-an-array
+    public static void shuffleArray(DImage[] ar) {
+        Random rnd = ThreadLocalRandom.current();
+        for (int i = ar.length - 1; i > 0; i--) {
+            int index = rnd.nextInt(i + 1);
+            // Simple swap
+            DImage a = ar[index];
+            ar[index] = ar[i];
+            ar[i] = a;
         }
     }
 }

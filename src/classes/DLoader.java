@@ -33,7 +33,7 @@ public class DLoader implements IDLoader {
         this.path = path;
     }
     @Override
-    public DImage[] loadImages() throws IOException {
+    public void loadImages() throws IOException {
         Path dir = Paths.get(this.path);
         // Counts number of files
         Files.walk(dir).forEach(path -> countFiles(path.toFile()));
@@ -48,7 +48,7 @@ public class DLoader implements IDLoader {
             }
         });
         // May need to reset pointers here
-        return this.DImageArray;
+//        return this.DImageArray;
     }
 
     public void initializeArrays() {
@@ -79,10 +79,7 @@ public class DLoader implements IDLoader {
 
             int length = file.getAbsolutePath().length();
             String label = file.getAbsolutePath().substring(length - 11, length - 10);
-            //System.out.println("File: " + file.getAbsolutePath() + " Label: " + label);
             // Add the label
-            //System.out.println("COUNTER:" + this.imageCounter);
-            //System.out.println("ARRAY lENGTH: " + this.DImageArray.length);
             this.DLabels[this.imageCounter] = Integer.parseInt(label);
             // Add the image
             this.DImageArray[this.imageCounter] = new DImage(this.imageCounter, imagePixles, Integer.parseInt(label));
@@ -93,7 +90,8 @@ public class DLoader implements IDLoader {
     @Override
     public Normal normalize() throws IOException {
         loadImages();
-//        System.out.println(DImageArray[2].pixels.length);
+        // Shuffle the DImage Array
+        Utils.shuffleArray(this.DImageArray);
         double[][] pixels = new double[this.numberOfFiles][this.DImageArray[0].pixels.length];
         double[][] labels = new double[this.numberOfFiles][6];
 
