@@ -10,7 +10,11 @@ public class Convert {
 
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
-                result[row][col] = image.getRGB(col, row);
+//                result[row][col] = image.getRGB(col, row);
+                int r  = (image.getRGB(col, row) >> 16) & 0xFF;
+                int g  = (image.getRGB(col, row) >> 8) & 0xFF;
+                int b  = (image.getRGB(col, row) & 0xFF) & 0xFF;
+                result[row][col] = (r + g + b) / 3;
             }
         }
         return result;
