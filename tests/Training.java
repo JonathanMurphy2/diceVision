@@ -35,14 +35,14 @@ public class Training {
      * These learning parameters generally give good results according to literature,
      * that is, the training algorithm converges with the tolerance below.
      * */
-    public final static double LEARNING_RATE = 0.25;
+    public final static double LEARNING_RATE = 0.01;
     public final static double LEARNING_MOMENTUM = 0.25;
 
-    public static final int TRAINING_SAMPLES = 500;
+    public static final int TRAINING_SAMPLES = 2000;
 
-    public static final int TESTING_SAMPLES = 200;
+    public static final int TESTING_SAMPLES = 400;
     public static final int MAX_EPOCHS = 1000;
-    public static final double TOLERANCE = .05;
+    public static final double TOLERANCE = .1;
     public static final int LOG_FREQUENCY = 1;
     private static  double[][] TESTING_IDEALS;
     private static double[][] TESTING_INPUTS;
@@ -53,31 +53,17 @@ public class Training {
     static String directoryRoot = System.getProperty("user.dir");
 
     public static void init() throws IOException {
-
-
-        DLoader dLoader = new DLoader(directoryRoot + "\\src\\Data\\DiceDataset\\DiceDataset");
-
-//        DImage[] dImageList = dLoader.loadImages();
-//        int[] dLabels = dLoader.loadLabels();
+        DLoader dLoader = new DLoader(directoryRoot + "/src/Data/DiceDataset/DiceDataset");
 
         IDLoader.Normal normal = dLoader.normalize();
-
         Mop mop = new Mop();
 
         TRAINING_INPUTS = mop.slice(normal.pixels(), 0, TRAINING_SAMPLES);
-//        assert (TRAINING_INPUTS[0].length == (28 * 28));
-
         TRAINING_IDEALS = mop.slice(normal.labels(), 0, TRAINING_SAMPLES);
-//        assert (TRAINING_IDEALS[0].length == (10 - 1));
 
-        TESTING_INPUTS = mop.slice(normal.pixels(), 0, TESTING_SAMPLES);
-//        assert (TRAINING_INPUTS[0].length == (28 * 28));
-
-        TESTING_IDEALS = mop.slice(normal.labels(), 0, TESTING_SAMPLES);
-//        assert (TRAINING_IDEALS[0].length == (10 - 1));
-
+        TESTING_INPUTS = mop.slice(normal.pixels(), TRAINING_SAMPLES, TRAINING_SAMPLES + TESTING_SAMPLES);
+        TESTING_IDEALS = mop.slice(normal.labels(), TRAINING_SAMPLES, TRAINING_SAMPLES + TESTING_SAMPLES);
     }
-
 
     /**
      * The main method.

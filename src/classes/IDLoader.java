@@ -21,9 +21,8 @@ public interface IDLoader {
 
     /**
      * Gets the pixel and label data in row-major order from their respective files.
-     * @return Data in row-major order.
      */
-    public DImage[] loadImages() throws IOException;
+    public void loadImages() throws IOException;
 
     /**
      * Gets the pixel magic number.
