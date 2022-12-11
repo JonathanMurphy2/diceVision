@@ -7,7 +7,9 @@ import classes.*;
 //import neural.util.IrisHelper;
 import org.apache.commons.math3.stat.StatUtils;
 import org.encog.Encog;
+import org.encog.engine.network.activation.ActivationReLU;
 import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.mathutil.Equilateral;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
@@ -36,13 +38,13 @@ public class Training {
      * that is, the training algorithm converges with the tolerance below.
      * */
     public final static double LEARNING_RATE = 0.01;
-    public final static double LEARNING_MOMENTUM = 0.25;
+    public final static double LEARNING_MOMENTUM = 0.05;
 
     public static final int TRAINING_SAMPLES = 2000;
 
-    public static final int TESTING_SAMPLES = 400;
+    public static final int TESTING_SAMPLES = 200;
     public static final int MAX_EPOCHS = 1000;
-    public static final double TOLERANCE = .1;
+    public static final double TOLERANCE = .05;
     public static final int LOG_FREQUENCY = 1;
     private static  double[][] TESTING_IDEALS;
     private static double[][] TESTING_INPUTS;
@@ -83,7 +85,7 @@ public class Training {
         network.addLayer(new BasicLayer(null, true, 16384));
 
         // Hidden layer plus bias node
-        network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 100));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 500));
 
         // Hidden layer plus bias node
         network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 75));
@@ -105,12 +107,7 @@ public class Training {
         MLDataSet testingSet = new BasicMLDataSet(TESTING_INPUTS, TESTING_IDEALS);
 
         // Use a training object for the learning algorithm, backpropagation.
-//        final BasicTraining training = new Backpropagation(network, trainingSet,LEARNING_RATE,LEARNING_MOMENTUM);
-        final BasicTraining training = new ResilientPropagation(network, trainingSet);
-
-//      Set learning batch size: 0 = batch, 1 = online, n = batch size
-//      See org.encog.neural.networks.training.BatchSize
-//      train.setBatchSize(0);
+        final BasicTraining training = new Backpropagation(network, trainingSet,LEARNING_RATE,LEARNING_MOMENTUM);
 
         int epoch = 0;
 
@@ -155,20 +152,14 @@ public class Training {
         Utils.log(epoch, error,sameCount > MAX_SAME_COUNT, true);
 
         Reporter mExercise = new Reporter(network, trainingSet);
+        System.out.println("Training Results");
         mExercise.report();
 
         java.util.Date end_date = new java.util.Date();
         System.out.println("finished :" + end_date);
-//        EncogHelper.report(trainingSet, network);
-//        EncogHelper.describe(network);
-//
-//        // Create testing observations
-       // MLDataSet testingSet = new BasicMLDataSet(TESTING_INPUTS, TESTING_IDEALS);
-//        // Testing network on testing data
-         //EncogHelper.report(testingSet, network);
-          //network_report(testingSet, network);
 
         Reporter mTest = new Reporter(network, testingSet);
+        System.out.println("Testing Results");
         mTest.report();
 
         Encog.getInstance().shutdown();
