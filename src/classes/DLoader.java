@@ -47,8 +47,6 @@ public class DLoader implements IDLoader {
                 throw new RuntimeException(e);
             }
         });
-        // May need to reset pointers here
-//        return this.DImageArray;
     }
 
     public void initializeArrays() {
@@ -72,15 +70,11 @@ public class DLoader implements IDLoader {
     public void showFile (File file) throws IOException {
         if (file.isFile()) {
             BufferedImage image = ImageIO.read(file);
-//            BufferedImage monoChromeImage = new BufferedImage(image.getWidth(), image.getHeight(),
-//                    BufferedImage.TYPE_BYTE_BINARY);
             int[][] matrixImagePixels = Convert.convertTo2DUsingGetRGB(image);
             int[] imagePixles = Arrays.stream(matrixImagePixels)
                     .flatMapToInt(Arrays::stream)
                     .toArray();
-            for (int i = 0; i < 1; i++)
-                System.out.print(imagePixles[i]);
-            System.out.println();
+
 
 
             int length = file.getAbsolutePath().length();

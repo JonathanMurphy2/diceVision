@@ -15,8 +15,6 @@ public class Mop {
         }
 
         return src_copy;
-//        double[][] src_copy = Arrays.copyOfRange(src,startRow,endRow);
-//        return src_copy;
     }
 
     public double[][] transpose(double[][] src) {
